@@ -1,4 +1,4 @@
-structured-log-clerk
-====================
+structured-catalog
+==================
 
-Downloads structured logs and stores the data therein to a database
+Listens to pulse, downloads structured logs, and stores the data therein to a database.
