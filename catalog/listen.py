@@ -6,7 +6,7 @@ import sys
 import time
 import traceback
 
-from mozillapulse import NormalizedBuildConsumer
+from mozillapulse.consumers import NormalizedBuildConsumer
 from mozlog.structured import commandline
 
 from . import config
@@ -27,12 +27,12 @@ def on_test_event(data, message):
         logger.debug("skipping a {} job, because 'blobber_files' is not set".format(friendly_name))
         return
 
-    if 'l10n' in data['tags']:
-        logger.debug("skipping a {} job, because 'l10n' in tags".format(friendly_name))
+    if data['tree'] in ('try',):
+        logger.debug("skipping a {} job, because it was run on an unsupported tree".format(friendly_name))
         return
 
     for name, url in data['blobber_files'].iteritems():
-        if name in config.general['structured_log_names']:
+        if name in config.settings['structured_log_names']:
             break
     else:
         logger.debug("skipping a {} job, because no structured log was detected in 'blobber_files'".format(friendly_name))
@@ -71,6 +71,7 @@ def run(args=sys.argv[1:]):
     parser = argparse.ArgumentParser()
     parser.add_argument('-j', '--num-threads',
                         dest='num_threads',
+                        type=int,
                         default=cpu_count(),
                         help='Number of worker threads to spawn')
     db = parser.add_argument_group('Database')
@@ -83,13 +84,14 @@ def run(args=sys.argv[1:]):
                     default=None,
                     help='The port the database is running behind')
     db.add_argument('--db-type',
-                    dest='database_type',
+                    dest='database_backend',
                     choices=['elasticsearch'],
                     default='elasticsearch',
                     help='The type of database to use')
     pulse = parser.add_argument_group('Pulse')
     pulse.add_argument('--topic',
                        dest='pulse_topic',
+                       default='unittest.#',
                        help='The pulse topic to listen on')
     pulse.add_argument('--durable',
                        dest='pulse_durable',
@@ -120,7 +122,7 @@ def run(args=sys.argv[1:]):
     db_args.update({k[len('database_'):]: v for k, v in args.items() if k.startswith('database') if v is not None})
 
     # spawn the workers
-    for _ in range(args.num_threads):
+    for _ in range(args['num_threads']):
         worker = Worker()
         worker.start()
 

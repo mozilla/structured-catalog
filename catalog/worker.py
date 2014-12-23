@@ -1,5 +1,6 @@
 from threading import Thread
 from Queue import Queue
+import os
 import tempfile
 import traceback
 
@@ -70,9 +71,9 @@ class Worker(Thread):
                 logger.error("The url '{}' requires authentication!".format(url))
         r.raise_for_status()
 
-        tf, path = tempfile.mkstemp(prefix='structured-catalog')
-        for chunk in r.iter_content(1024):
-            tf.write(chunk)
-        tf.close()
+        with mozfile.NamedTemporaryFile(prefix='structured-catalog', delete=False) as tf:
+            for chunk in r.iter_content(1024):
+                tf.write(chunk)
+            path = tf.name
         return path
 
