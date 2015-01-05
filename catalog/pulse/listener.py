@@ -9,7 +9,7 @@ from ..queue import all_queues
 
 logger = None
 expires = 60 * 60 * 24 * 30 # 30 days
-work_queues = [all_queues[q]() for q in settings['work_queues']]
+work_queues = []
 
 def on_test_event(data, message):
     message.ack()
@@ -38,9 +38,11 @@ def on_test_event(data, message):
 
 def listen(pulse_args):
     global logger
+    global work_queues
     logger = commandline.get_default_logger()
-    consumer = NormalizedBuildConsumer(callback=on_test_event, **pulse_args)
+    work_queues = [all_queues[q]() for q in settings['work_queues']]
 
+    consumer = NormalizedBuildConsumer(callback=on_test_event, **pulse_args)
     while True:
         try:
             consumer.listen()

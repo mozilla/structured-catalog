@@ -29,7 +29,7 @@ class SQSQueue(BaseQueue):
             self.remove(msg)
             return json.loads(msg.get_body())
         except Empty:
-            rs = self.unprocessed.get_messages(num_messages=1000)
+            rs = self.unprocessed.get_messages(num_messages=10)
             if not rs:
                 return
 

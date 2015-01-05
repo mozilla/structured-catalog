@@ -11,16 +11,16 @@ from mozlog.structured import (
 import mozfile
 import requests
 
-from . import config
+from .. import config
 from .datastore import get_storage_backend
 from .handler import StoreResultsHandler
 
 settings = config.settings
-logger = logger or structuredlog.get_default_logger()
+logger = structuredlog.get_default_logger()
 
 def process_test_job(self, data):
-    friendly_name = "{}-{} {}".format(data['platform'], data['buildtype'], data['test'])
-    logger.debug("now processing a '{}' job".format(friendly_name))
+    build_name = "{}-{} {}".format(data['platform'], data['buildtype'], data['test'])
+    logger.debug("now processing a '{}' job".format(build_name))
 
     log_url = None
     for name, url in data['blobber_files'].iteritems():
