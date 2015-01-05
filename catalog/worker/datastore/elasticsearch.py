@@ -11,7 +11,8 @@ class ElasticSearchStore(BaseStore):
 
     def connect(self, host='localhost', port=9200):
         node = { 'host': host, 'port': port }
-        self.es = elasticsearch.Elasticsearch([node])
+        #self.es = elasticsearch.Elasticsearch([node])
 
     def commit(self, *args, **kwargs):
-        self.es.create(*args, **kwargs)
+        #self.es.create(*args, **kwargs)
+        pass

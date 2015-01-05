@@ -17,7 +17,6 @@ def read_runtime_config(config_path):
     cp = ConfigParser()
     cp.read(config_path)
     for section in cp.sections():
-        print section
         if section == 'settings':
             items = dict([(k.upper(), v) for k, v in cp.items(section)])
         else:

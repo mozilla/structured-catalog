@@ -38,9 +38,10 @@ class SQSQueue(BaseQueue):
 
             for msg in rs:
                 self._cache.put(msg)
-            return self.get()
         finally:
             self._lock.release()
+
+        return self.get()
 
     def remove(self, msg):
         self.unprocessed.delete_message(msg)
