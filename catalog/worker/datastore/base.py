@@ -1,7 +1,5 @@
 from abc import ABCMeta, abstractmethod
 
-from .elasticsearch import ElasticSearchStore
-
 class BaseStore(object):
     __metaclass__ = ABCMeta
 
@@ -20,15 +18,3 @@ class BaseStore(object):
     @abstractmethod
     def commit(self, *args, **kwargs):
         pass
-
-
-def get_storage_backend(db_type, host=None, port=None):
-    store_map = {
-        'elasticsearch': ElasticSearchStore,
-    }
-
-    if db_type not in store_map:
-        raise KeyError("Unrecognized store '{}'".format(db_type))
-
-    return store_map[db_type](host=host, port=port)
-

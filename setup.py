@@ -8,6 +8,8 @@ PACKAGE_VERSION = '0.1'
 
 deps = [
     'mozillapulse',
+    'mozlog',
+    'mozfile',
     'requests',
 ]
 
@@ -34,5 +36,6 @@ setup(name='structured-catalog',
       install_requires=deps,
       entry_points="""
         [console_scripts]
-        start-catalog = catalog.listen:run
+        start-catalog-listener = catalog.pulse.run_listener:cli
+        start-catalog-workers = catalog.worker.run_workers:cli
       """)

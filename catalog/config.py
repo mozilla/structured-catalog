@@ -4,8 +4,8 @@ import os
 
 globals()['settings'] = {
     'datastore': 'elasticsearch',
-    'max_queue_size': 1000,
     'structured_log_names': ['raw_structured_logs.log', 'wpt_structured_full.log'],
+    'work_queues': ['sqs'],
 }
 globals()['pulse'] = {}
 globals()['database'] = {}
@@ -17,7 +17,6 @@ def read_runtime_config(config_path):
     cp = ConfigParser()
     cp.read(config_path)
     for section in cp.sections():
-        print section
         if section == 'settings':
             items = dict([(k.upper(), v) for k, v in cp.items(section)])
         else:
