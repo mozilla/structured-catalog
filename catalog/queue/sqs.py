@@ -1,4 +1,4 @@
-from multiprocessing import Queue
+from multiprocessing import Queue, Lock
 from Queue import Empty
 import json
 
@@ -11,6 +11,7 @@ def do_delayed_imports():
 
 class SQSQueue(BaseQueue):
     _cache = Queue()
+    _lock = Lock()
 
     def __init__(self):
         BaseQueue.__init__(self)
@@ -25,6 +26,7 @@ class SQSQueue(BaseQueue):
         self.unprocessed.write(m)
 
     def get(self):
+        self._lock.acquire()
         try:
             msg = self._cache.get(block=False)
             self.remove(msg)
@@ -37,6 +39,8 @@ class SQSQueue(BaseQueue):
             for msg in rs:
                 self._cache.put(msg)
             return self.get()
+        finally:
+            self._lock.release()
 
     def remove(self, msg):
         self.unprocessed.delete_message(msg)

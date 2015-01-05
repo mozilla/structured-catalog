@@ -1,8 +1,7 @@
-import json
 import traceback
 
 from mozillapulse.consumers import NormalizedBuildConsumer
-from mozlog.structured import commandline
+from mozlog.structured import structuredlog
 
 from ..config import settings
 from ..queue import all_queues
@@ -39,7 +38,7 @@ def on_test_event(data, message):
 def listen(pulse_args):
     global logger
     global work_queues
-    logger = commandline.get_default_logger()
+    logger = structuredlog.get_default_logger()
     work_queues = [all_queues[q]() for q in settings['work_queues']]
 
     consumer = NormalizedBuildConsumer(callback=on_test_event, **pulse_args)

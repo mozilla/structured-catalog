@@ -10,9 +10,12 @@ from .datastore import get_storage_backend
 from .handler import StoreResultsHandler
 
 settings = config.settings
-logger = structuredlog.get_default_logger()
+logger = None
 
 def process_test_job(data):
+    global logger
+    logger = logger or structuredlog.get_default_logger()
+
     build_name = "{}-{} {}".format(data['platform'], data['buildtype'], data['test'])
     logger.debug("now processing a '{}' job".format(build_name))
 
@@ -24,8 +27,9 @@ def process_test_job(data):
     log_path = _download_log(log_url)
 
     try:
+        backend = settings['datastore']
         db_args = config.database
-        store = get_storage_backend(**db_args)
+        store = get_storage_backend(backend, **db_args)
 
         # TODO commit metadata about the test run
 

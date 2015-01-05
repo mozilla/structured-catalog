@@ -59,9 +59,7 @@ def cli(args=sys.argv[1:]):
     commandline.add_logging_group(parser)
 
     args = vars(parser.parse_args(args))
-
-    global logger
-    logger = commandline.setup_logging("catalog-worker", args)
+    commandline.setup_logging("catalog-worker", args)
 
     qname = args['queue']
     process_class = Process
