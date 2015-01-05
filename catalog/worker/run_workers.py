@@ -27,7 +27,7 @@ def burst_worker(qname):
     Worker that exits once the queue is Empty.
     """
     q = all_queues[qname]()
-    data = q.get(q)
+    data = q.get()
     while data:
         process_test_job(data)
         data = q.get()
