@@ -46,7 +46,7 @@ def cli(args=sys.argv[1:]):
     args = vars(parser.parse_args(args))
 
     global logger
-    logger = commandline.setup_logging("structured-catalog", args)
+    logger = commandline.setup_logging("catalog-listener", args)
 
     config.read_runtime_config(os.path.expanduser('~/.catalogrc'))
 

@@ -1,9 +1,3 @@
-from threading import Thread
-from Queue import Queue
-import os
-import tempfile
-import traceback
-
 from mozlog.structured import (
     reader,
     structuredlog,
@@ -18,7 +12,7 @@ from .handler import StoreResultsHandler
 settings = config.settings
 logger = structuredlog.get_default_logger()
 
-def process_test_job(self, data):
+def process_test_job(data):
     build_name = "{}-{} {}".format(data['platform'], data['buildtype'], data['test'])
     logger.debug("now processing a '{}' job".format(build_name))
 
@@ -27,7 +21,7 @@ def process_test_job(self, data):
         if name in settings['structured_log_names']:
             log_url = url
             break
-    log_path = self._download_log(log_url)
+    log_path = _download_log(log_url)
 
     try:
         db_args = config.database
@@ -42,7 +36,7 @@ def process_test_job(self, data):
     finally:
         mozfile.remove(log_path)
 
-def _download_log(self, url):
+def _download_log(url):
     r = requests.get(url, stream=True)
     if r.status_code == 401:
         if hasattr(config, 'auth'):

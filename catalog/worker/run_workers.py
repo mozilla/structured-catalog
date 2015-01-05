@@ -5,6 +5,8 @@ import subprocess
 import sys
 import time
 
+from mozlog.structured import commandline
+
 from ..queue import all_queues
 from .worker import process_test_job
 
@@ -52,14 +54,21 @@ def cli(args=sys.argv[1:]):
                         type=int,
                         default=1,
                         help='The number of worker processes to spawn.')
+    # setup logging args
+    commandline.log_formatters = { k: v for k, v in commandline.log_formatters.iteritems() if k in ('raw', 'mach') }
+    commandline.add_logging_group(parser)
+
     args = vars(parser.parse_args(args))
+
+    global logger
+    logger = commandline.setup_logging("catalog-worker", args)
 
     qname = args['queue']
     process_class = Process
     if qname == 'rq':
         process_class = Thread
 
-    for _ in args['num_workers']:
+    for _ in range(args['num_workers']):
         worker = process_class(target=worker_map[qname], args=(qname,))
         worker.start()
 
