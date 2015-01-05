@@ -1,4 +1,5 @@
-from Queue import Queue, Empty
+from multiprocessing import Queue
+from Queue import Empty
 import json
 
 from .base import BaseQueue
