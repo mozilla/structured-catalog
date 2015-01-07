@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from .base import BaseQueue
 from ..worker import process_test_job
 
