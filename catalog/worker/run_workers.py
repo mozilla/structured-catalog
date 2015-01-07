@@ -42,7 +42,7 @@ def rq_worker(qname):
     """
     Spawns an rqworker in a subprocess.
     """
-    subprocess.check_call(['rqworker'])
+    subprocess.check_call(['rqworker', 'catalog'])
 
 def cli(args=sys.argv[1:]):
     worker_map = {

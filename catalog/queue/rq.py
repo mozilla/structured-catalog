@@ -16,7 +16,7 @@ class RQueue(BaseQueue):
         BaseQueue.__init__(self)
 
         self.redis_conn = redis.Redis()
-        self.queue = rq.Queue(connection=self.redis_conn)
+        self.queue = rq.Queue('catalog', connection=self.redis_conn)
 
     def push(self, job):
         self.queue.enqueue(process_test_job, job)
