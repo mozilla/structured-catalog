@@ -40,8 +40,8 @@ def listen(pulse_args):
     global logger
     global work_queues
     logger = structuredlog.get_default_logger()
+    logger.info("Jobs will be placed on the following queues: {}".format(', '.join(settings['work_queues'])))
     work_queues = [all_queues[q]() for q in settings['work_queues']]
-    logger.info("Jobs will be placed on the following queues: ".format(', '.join(work_queues)))
 
     consumer = NormalizedBuildConsumer(callback=on_test_event, **pulse_args)
     while True:
