@@ -6,7 +6,7 @@ import sys
 import time
 
 from mozlog.structured import commandline
-from request.exceptions import HTTPError
+from requests.exceptions import HTTPError
 
 from ..queue import all_queues
 from .worker import process_test_job
