@@ -1,20 +1,19 @@
-from mozlog.structured import (
-    reader,
-    structuredlog,
-)
+from mozlog.structured import reader
 import mozfile
 import requests
 
 from .. import config
+from .. import get_logger
 from .datastore import get_storage_backend
 from .handler import StoreResultsHandler
 
 settings = config.settings
 logger = None
 
+
 def process_test_job(data):
     global logger
-    logger = logger or structuredlog.get_default_logger()
+    logger = logger or get_logger(name='catalog-worker')
 
     build_name = "{}-{} {}".format(data['platform'], data['buildtype'], data['test'])
     logger.debug("now processing a '{}' job".format(build_name))
