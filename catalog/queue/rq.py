@@ -1,4 +1,5 @@
 from .base import BaseQueue
+from ..worker import process_test_job
 
 redis = None
 rq = None
@@ -11,14 +12,19 @@ def do_delayed_imports():
 class RQueue(BaseQueue):
 
     def __init__(self):
-        BaseQueue.__init__(self)
         do_delayed_imports()
+        BaseQueue.__init__(self)
+
+        self.redis_conn = redis.Redis()
+        self.queue = rq.Queue(connection=self.redis_conn)
 
     def push(self, job):
-        pass
+        self.queue.enqueue(process_test_job, job)
 
     def get(self):
+        # rq delivers jobs to workers automatically, no need for polling
         pass
 
-    def remove(self, msg):
+    def remove(self, job):
+        # jobs are not kept after delivering to worker
         pass

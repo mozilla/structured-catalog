@@ -1,3 +1,4 @@
+from datetime import datetime
 from multiprocessing import Lock, Value
 
 from .base import BaseQueue
@@ -17,6 +18,8 @@ class MongoQueue(BaseQueue):
         BaseQueue.__init__(self)
         self.client = pymongo.MongoClient('localhost', 27017)
         self.db = self.client.structured_catalog
+        # structured logs are only kept for a month, automatically expire documents
+        self.db.jobs.ensure_index('created', expireAfterSeconds=60*60*24*31)
 
     def encode_blobber_file_keys(self, job):
         blobber_files = {}
@@ -35,6 +38,7 @@ class MongoQueue(BaseQueue):
         job = {
             'payload': job,
             'score': 0,
+            'created': datetime.utcnow(),
         }
         self.db.jobs.insert(job)
 
