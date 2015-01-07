@@ -1,3 +1,5 @@
+import sys
+
 from mozlog.structured.formatters import MachFormatter
 from mozlog.structured.structuredlog import (
     StructuredLogger,
@@ -11,7 +13,7 @@ from mozlog.structured.handlers import (
 
 def create_logger(name='catalog', stream=None, level='debug'):
     stream = stream or sys.stdout
-    logger = StructuredLog(name)
+    logger = StructuredLogger(name)
     formatter = LogLevelFilter(MachFormatter(), level)
     logger.add_handler(StreamHandler(stream, formatter))
     set_default_logger(logger)
