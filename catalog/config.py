@@ -5,7 +5,7 @@ import os
 globals()['settings'] = {
     'datastore': 'elasticsearch',
     'structured_log_names': ['raw_structured_logs.log', 'wpt_structured_full.log'],
-    'work_queues': ['sqs', 'mongo'],
+    'work_queues': ['rq', 'mongo'],
 }
 globals()['pulse'] = {}
 globals()['database'] = {}

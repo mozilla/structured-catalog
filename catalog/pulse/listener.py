@@ -1,3 +1,4 @@
+import sys
 import traceback
 
 from mozillapulse.consumers import NormalizedBuildConsumer
@@ -31,7 +32,7 @@ def on_test_event(data, message):
         logger.debug("skipping a {} job, because no structured log was detected in 'blobber_files'".format(build_name))
         return
 
-    logger.debug("adding {} job to the work queues".format(build_name))
+    logger.info("adding {} job to the work queues".format(build_name))
     for q in work_queues:
         q.push(data)
 
@@ -40,6 +41,7 @@ def listen(pulse_args):
     global work_queues
     logger = structuredlog.get_default_logger()
     work_queues = [all_queues[q]() for q in settings['work_queues']]
+    logger.info("Jobs will be placed on the following queues: ".format(', '.join(work_queues)))
 
     consumer = NormalizedBuildConsumer(callback=on_test_event, **pulse_args)
     while True:
@@ -48,6 +50,7 @@ def listen(pulse_args):
         except IOError:
             pass
         except KeyboardInterrupt:
-            raise
+            logger.info("Received SIGINT, exiting")
+            sys.exit(1)
         except:
             traceback.print_exc()

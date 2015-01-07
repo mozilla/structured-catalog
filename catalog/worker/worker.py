@@ -16,7 +16,7 @@ def process_test_job(data):
     logger = logger or get_logger(name='catalog-worker')
 
     build_name = "{}-{} {}".format(data['platform'], data['buildtype'], data['test'])
-    logger.debug("now processing a '{}' job".format(build_name))
+    logger.info("now processing a '{}' job".format(build_name))
 
     log_url = None
     for name, url in data['blobber_files'].iteritems():
