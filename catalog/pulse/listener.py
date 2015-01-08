@@ -4,6 +4,7 @@ import traceback
 from mozillapulse.consumers import NormalizedBuildConsumer
 from mozlog.structured import structuredlog
 
+from .. import utils
 from ..config import settings
 from ..queue import all_queues
 
@@ -25,10 +26,7 @@ def on_test_event(data, message):
         logger.debug("skipping a {} job, because it was run on an unsupported tree".format(build_name))
         return
 
-    for name, url in data['blobber_files'].iteritems():
-        if name in settings['structured_log_names']:
-            break
-    else:
+    if not utils.get_structured_log(data['blobber_files'])
         logger.debug("skipping a {} job, because no structured log was detected in 'blobber_files'".format(build_name))
         return
 

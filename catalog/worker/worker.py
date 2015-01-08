@@ -3,7 +3,7 @@ import mozfile
 import requests
 
 from .. import config
-from .. import get_logger
+from .. import utils
 from .datastore import get_storage_backend
 from .handler import StoreResultsHandler
 
@@ -13,16 +13,12 @@ logger = None
 
 def process_test_job(data):
     global logger
-    logger = logger or get_logger(name='catalog-worker')
+    logger = logger or utils.get_logger(name='catalog-worker')
 
     build_name = "{}-{} {}".format(data['platform'], data['buildtype'], data['test'])
     logger.info("now processing a '{}' job".format(build_name))
 
-    log_url = None
-    for name, url in data['blobber_files'].iteritems():
-        if name in settings['structured_log_names']:
-            log_url = url
-            break
+    log_url = utils.get_structured_log(data['blobber_files'])
     log_path = _download_log(log_url)
 
     try:
