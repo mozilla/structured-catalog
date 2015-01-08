@@ -37,5 +37,5 @@ setup(name='structured-catalog',
       entry_points="""
         [console_scripts]
         catalog-listener = catalog.pulse.run_listener:cli
-        catalog-workers = catalog.worker.run_workers:cli
+        catalog-worker = catalog.worker.run_worker:cli
       """)
