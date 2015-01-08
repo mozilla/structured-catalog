@@ -19,16 +19,15 @@ def on_test_event(data, message):
     def skip(reason):
         message.ack()
         logger.debug("skipping a {} job because: {}".format(build_name, reason))
-        return
 
     if 'blobber_files' not in data:
-        skip("'blobber_files' is not set")
+        return skip("'blobber_files' is not set")
 
     if data['tree'] in ('try',):
-        skip("job was run on an unsupported tree")
+        return skip("job was run on an unsupported tree")
 
     if not utils.get_structured_log(data['blobber_files']):
-        skip("no structured log was detected in 'blobber_files'")
+        return skip("no structured log was detected in 'blobber_files'")
 
     # don't ack the message if an interrupt was received before message could
     # be placed on all queues
