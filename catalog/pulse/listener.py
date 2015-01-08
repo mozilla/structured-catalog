@@ -13,26 +13,35 @@ expires = 60 * 60 * 24 * 30 # 30 days
 work_queues = []
 
 def on_test_event(data, message):
-    message.ack()
-
     data = data['payload']
     build_name = "{}-{} {}".format(data['platform'], data['buildtype'], data['test'])
 
-    if 'blobber_files' not in data:
-        logger.debug("skipping a {} job, because 'blobber_files' is not set".format(build_name))
+    def skip(reason):
+        message.ack()
+        logger.debug("skipping a {} job because: {}".format(build_name, reason))
         return
+
+    if 'blobber_files' not in data:
+        skip("'blobber_files' is not set")
 
     if data['tree'] in ('try',):
-        logger.debug("skipping a {} job, because it was run on an unsupported tree".format(build_name))
-        return
+        skip("job was run on an unsupported tree")
 
-    if not utils.get_structured_log(data['blobber_files'])
-        logger.debug("skipping a {} job, because no structured log was detected in 'blobber_files'".format(build_name))
-        return
+    if not utils.get_structured_log(data['blobber_files']):
+        skip("no structured log was detected in 'blobber_files'")
 
-    logger.info("adding {} job to the work queues".format(build_name))
-    for q in work_queues:
-        q.push(data)
+    # don't ack the message if an interrupt was received before message could
+    # be placed on all queues
+    try:
+        logger.info("adding {} job to the work queues".format(build_name))
+        for q in work_queues:
+            q.push(data)
+    except KeyboardInterrupt:
+        raise
+    except:
+        message.ack()
+        raise
+    message.ack()
 
 def listen(pulse_args):
     global logger
@@ -48,7 +57,7 @@ def listen(pulse_args):
         except IOError:
             pass
         except KeyboardInterrupt:
-            logger.info("Received SIGINT, exiting")
+            logger.warning("Received SIGINT, exiting")
             sys.exit(1)
         except:
-            traceback.print_exc()
+            logger.error(traceback.format_exc())

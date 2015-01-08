@@ -12,6 +12,8 @@ from mozlog.structured.handlers import (
     LogLevelFilter,
 )
 
+from .config import settings
+
 def create_logger(name='catalog', stream=None, level='debug'):
     stream = stream or sys.stdout
     logger = StructuredLogger(name)
