@@ -1,3 +1,4 @@
+import json
 import sys
 import traceback
 
@@ -9,7 +10,6 @@ from ..config import settings
 from ..queue import all_queues
 
 logger = None
-expires = 60 * 60 * 24 * 30 # 30 days
 work_queues = []
 
 def on_test_event(data, message):
@@ -46,7 +46,12 @@ def listen(pulse_args):
     global logger
     global work_queues
     logger = structuredlog.get_default_logger()
-    logger.info("Jobs will be placed on the following queues: {}".format(', '.join(settings['work_queues'])))
+
+    sanitized_args = pulse_args.copy()
+    if 'password' in sanitized_args:
+        sanitized_args['password'] = 'hunter1'
+    logger.info("Starting pulse listener with args: \n{}".format(json.dumps(sanitized_args, indent=2))
+    logger.info("Placing jobs on the following queues: {}".format(', '.join(settings['work_queues'])))
     work_queues = [all_queues[q]() for q in settings['work_queues']]
 
     consumer = NormalizedBuildConsumer(callback=on_test_event, **pulse_args)
