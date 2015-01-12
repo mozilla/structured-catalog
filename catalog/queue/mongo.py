@@ -17,7 +17,7 @@ class MongoQueue(BaseQueue):
         do_delayed_imports()
         BaseQueue.__init__(self)
         self.client = pymongo.MongoClient('localhost', 27017)
-        self.db = self.client.structured_catalog
+        self.db = self.client.catalog
         # structured logs are only kept for a month, automatically expire documents
         self.db.jobs.ensure_index('created', expireAfterSeconds=60*60*24*31)
 
