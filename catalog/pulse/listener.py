@@ -50,7 +50,7 @@ def listen(pulse_args):
     sanitized_args = pulse_args.copy()
     if 'password' in sanitized_args:
         sanitized_args['password'] = 'hunter1'
-    logger.info("Starting pulse listener with args: \n{}".format(json.dumps(sanitized_args, indent=2))
+    logger.info("Starting pulse listener with args: \n{}".format(json.dumps(sanitized_args, indent=2)))
     logger.info("Placing jobs on the following queues: {}".format(', '.join(settings['work_queues'])))
     work_queues = [all_queues[q]() for q in settings['work_queues']]
 
