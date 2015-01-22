@@ -55,3 +55,8 @@ docs/_build/
 
 # PyBuilder
 target/
+/catalog/vendor/pyLibrary/.svn
+/.env
+/.idea
+/*.iml
+/pyLibrary

@@ -11,6 +11,7 @@ deps = [
     'mozlog',
     'mozfile',
     'requests',
+    'pyLibrary==0.4.15007'
 ]
 
 setup(name='structured-catalog',
