@@ -50,7 +50,7 @@ def cli(args=sys.argv[1:]):
     global logger
     logger = commandline.setup_logging("catalog-listener", args)
 
-    config.read_runtime_config(os.path.expanduser('~/.catalogrc'))
+    config.read_runtime_config("./resources/config/config.json")
 
     pulse_args = config.settings.pulse
     set_default({k[len('pulse_'):]: v for k, v in args.items() if k.startswith('pulse') if v is not None}, pulse_args)

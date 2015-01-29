@@ -4,6 +4,7 @@ import requests
 
 from .. import config
 from .. import utils
+from catalog.worker.unittest_logs_to_es import StoreResultsHandler
 from .datastore import get_storage_backend
 
 settings = config.settings
@@ -21,13 +22,11 @@ def process_test_job(data):
     log_path = _download_log(log_url)
 
     try:
-        backend = settings['datastore']
-        db_args = config.settings.database
-        store = get_storage_backend(backend, **db_args)
+        store = get_storage_backend(settings.datastore)
 
         # TODO commit metadata about the test run
 
-        handler = StoreResultsHandler(store)
+        handler = StoreResultsHandler(data, store)
         with open(log_path, 'r') as log:
             iterator = reader.read(log)
             reader.handle_log(iterator, handler)

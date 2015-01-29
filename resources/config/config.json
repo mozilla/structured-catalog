@@ -9,5 +9,11 @@
 		"topic": "unittest.#",
 		"durable":true,
 		"$ref":"file://~/.catalogrc#pulse"
+	},
+	"datastore":{
+		"type":"elasticsearch",
+		"host":"localhost",
+		"port":"9200",
+		"index":"unittest"
 	}
 }

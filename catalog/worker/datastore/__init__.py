@@ -1,13 +1,13 @@
 from .elasticsearch import ElasticSearchStore
 
+store_map = {
+    'elasticsearch': ElasticSearchStore,
+}
 
-def get_storage_backend(backend, host=None, port=None):
-    store_map = {
-        'elasticsearch': ElasticSearchStore,
-    }
+def get_storage_backend(settings):
+    try:
+        store_map[settings.type](settings)
+    except Exception, e:
+        raise KeyError("Unrecognized store '{}'".format(settings.type))
 
-    if backend not in store_map:
-        raise KeyError("Unrecognized store '{}'".format(backend))
-
-    return store_map[backend](host=host, port=port)
 
