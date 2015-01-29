@@ -5,7 +5,6 @@ import requests
 from .. import config
 from .. import utils
 from .datastore import get_storage_backend
-from .handler import StoreResultsHandler
 
 settings = config.settings
 logger = None
@@ -23,7 +22,7 @@ def process_test_job(data):
 
     try:
         backend = settings['datastore']
-        db_args = config.database
+        db_args = config.settings.database
         store = get_storage_backend(backend, **db_args)
 
         # TODO commit metadata about the test run

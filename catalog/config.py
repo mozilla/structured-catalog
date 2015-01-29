@@ -1,14 +1,18 @@
+
 from ConfigParser import ConfigParser
+from pyLibrary.dot import wrap
 import os
 
 
-globals()['settings'] = {
+settings = wrap({
     'datastore': 'elasticsearch',
-    'structured_log_names': ['raw_structured_logs.log', 'wpt_structured_full.log', 'mn_structured_full.log', '*_raw.log'],
+    'structure d_log_names': ['raw_structured_logs.log', 'wpt_structured_full.log', 'mn_structured_full.log', '*_raw.log'],
     'work_queues': ['rq', 'mongo'],
-}
-globals()['pulse'] = {}
-globals()['database'] = {}
+    "pulse":None,
+    "database":None
+})
+# globals()['pulse'] = {}
+# globals()['database'] = {}
 
 def read_runtime_config(config_path):
     if not os.path.isfile(config_path):
@@ -22,13 +26,13 @@ def read_runtime_config(config_path):
         else:
             items = dict(cp.items(section))
 
-        if section in globals():
-            globals()[section].update(items)
+        if section in settings:
+            settings[section].update(items)
         else:
-            globals()[section] = items
+            settings[section] = items
 
-        for k, v in globals()[section].iteritems():
+        for k, v in settings[section].iteritems():
             try:
-                globals()[section][k] = int(v)
+                settings[section][k] = int(v)
             except:
                 pass

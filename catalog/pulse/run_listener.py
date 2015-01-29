@@ -6,6 +6,8 @@ from mozlog.structured import commandline
 
 from catalog import config
 from catalog.pulse.listener import listen
+from pyLibrary.dot import set_default
+
 
 def cli(args=sys.argv[1:]):
     parser = argparse.ArgumentParser()
@@ -50,8 +52,8 @@ def cli(args=sys.argv[1:]):
 
     config.read_runtime_config(os.path.expanduser('~/.catalogrc'))
 
-    pulse_args = config.pulse
-    pulse_args.update({k[len('pulse_'):]: v for k, v in args.items() if k.startswith('pulse') if v is not None})
+    pulse_args = config.settings.pulse
+    set_default({k[len('pulse_'):]: v for k, v in args.items() if k.startswith('pulse') if v is not None}, pulse_args)
 
     listen(pulse_args)
 

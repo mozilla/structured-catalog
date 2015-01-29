@@ -7,6 +7,7 @@ from mozlog.structured import structuredlog
 
 from .. import utils
 from ..config import settings
+from pyLibrary.dot import unwrap
 from ..queue import all_queues
 
 logger = None
@@ -54,7 +55,7 @@ def listen(pulse_args):
     logger.info("Placing jobs on the following queues: {}".format(', '.join(settings['work_queues'])))
     work_queues = [all_queues[q]() for q in settings['work_queues']]
 
-    consumer = NormalizedBuildConsumer(callback=on_test_event, **pulse_args)
+    consumer = NormalizedBuildConsumer(callback=on_test_event, **unwrap(pulse_args))
     while True:
         try:
             consumer.listen()

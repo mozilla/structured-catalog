@@ -1,0 +1,13 @@
+{
+	"queue":{
+		"type":"mongodb",
+		"host":"localhost",
+		"port":"27017"
+	},
+	"pulse":{
+		"applabel": "catalog-listener-dev",
+		"topic": "unittest.#",
+		"durable":true,
+		"$ref":"file://~/.catalogrc#pulse"
+	}
+}
