@@ -4,8 +4,8 @@ import sys
 
 from mozlog.structured import commandline
 
-from .. import config
-from .listener import listen
+from catalog import config
+from catalog.pulse.listener import listen
 
 def cli(args=sys.argv[1:]):
     parser = argparse.ArgumentParser()
