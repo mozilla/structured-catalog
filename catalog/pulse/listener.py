@@ -5,10 +5,10 @@ import traceback
 from mozillapulse.consumers import NormalizedBuildConsumer
 from mozlog.structured import structuredlog
 
-from .. import utils
-from ..config import settings
+from catalog import utils
+from catalog import config
 from pyLibrary.dot import unwrap
-from ..queue import all_queues
+from catalog .queue import all_queues
 
 logger = None
 work_queues = []
@@ -52,8 +52,8 @@ def listen(pulse_args):
     if 'password' in sanitized_args:
         sanitized_args['password'] = 'hunter1'
     logger.info("Starting pulse listener with args: \n{}".format(json.dumps(sanitized_args, indent=2)))
-    logger.info("Placing jobs on the following queues: {}".format(', '.join(settings['work_queues'])))
-    work_queues = [all_queues[q]() for q in settings['work_queues']]
+    logger.info("Placing jobs on the following queues: {}".format(', '.join(config.settings.work_queues)))
+    work_queues = [all_queues[q]() for q in config.settings.work_queues]
 
     consumer = NormalizedBuildConsumer(callback=on_test_event, **unwrap(pulse_args))
     while True:

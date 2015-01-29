@@ -1,11 +1,9 @@
-import os
 from pyLibrary import jsons
 from pyLibrary.dot import wrap, set_default
-from pyLibrary.env.files import File
 
 settings = wrap({
-    'structure d_log_names': ['raw_structured_logs.log', 'wpt_structured_full.log', 'mn_structured_full.log', '*_raw.log'],
-    'work_queues': ['rq', 'mongo'],
+    'structured_log_names': ['raw_structured_logs.log', 'wpt_structured_full.log', 'mn_structured_full.log', '*_raw.log'],
+    'work_queues': None,
     "pulse": None,
     "datastore": None
 })

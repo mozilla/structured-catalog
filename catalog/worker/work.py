@@ -48,3 +48,13 @@ def _download_log(url):
             tf.write(chunk)
         path = tf.name
     return path
+
+
+if __name__=="__main__":
+    from redis import Redis
+    from rq import SimpleWorker, Queue
+
+    queue = Queue(connection=Redis())
+    queue.enqueue(my_long_running_job)
+    worker = SimpleWorker([queue])
+    worker.work(burst=True)  # Runs enqueued job

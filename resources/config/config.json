@@ -15,5 +15,6 @@
 		"host":"localhost",
 		"port":"9200",
 		"index":"unittest"
-	}
+	},
+	"work_queues": ["rq", "mongo", "simple"]
 }

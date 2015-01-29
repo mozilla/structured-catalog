@@ -1,18 +1,31 @@
 from .base import BaseStore
-
-elasticsearch = None
+from pyLibrary.env.elasticsearch import Cluster
 
 class ElasticSearchStore(BaseStore):
 
-    @classmethod
-    def do_delayed_imports(cls):
-        global elasticsearch
-        import elasticsearch
 
-    def connect(self, host='localhost', port=9200):
-        node = { 'host': host, 'port': port }
-        #self.es = elasticsearch.Elasticsearch([node])
+    def __init__(self, settings):
+        self.index = Cluster(settings).get_or_create_index(settings)
+
+    def connect(self):
+        pass
 
     def commit(self, *args, **kwargs):
-        #self.es.create(*args, **kwargs)
         pass
+
+    def commit(self):
+        pass
+
+    def extend(self, records):
+        """
+        :param records: list of records
+        :return:
+        """
+        self.index.extend(records)
+
+    def add(self, record):
+        """
+        :param record: one record to add
+        :return:
+        """
+        self.index.add(record)
