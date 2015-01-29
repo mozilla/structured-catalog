@@ -3,7 +3,6 @@ from pyLibrary.env.elasticsearch import Cluster
 
 class ElasticSearchStore(BaseStore):
 
-
     def __init__(self, settings):
         self.index = Cluster(settings).get_or_create_index(settings)
 
@@ -16,12 +15,15 @@ class ElasticSearchStore(BaseStore):
     def commit(self):
         pass
 
+    def do_delayed_imports(self):
+        pass
+
     def extend(self, records):
         """
         :param records: list of records
         :return:
         """
-        self.index.extend(records)
+        self.index.extend([{"value": r} for r in records])
 
     def add(self, record):
         """

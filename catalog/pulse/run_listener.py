@@ -6,40 +6,20 @@ from mozlog.structured import commandline
 
 from catalog import config
 from catalog.pulse.listener import listen
+from pyLibrary.debugs import constants
+from pyLibrary.debugs.logs import Log
+from pyLibrary.debugs.mozlog import use_mozlog
 from pyLibrary.dot import set_default
 
 
 def cli(args=sys.argv[1:]):
     parser = argparse.ArgumentParser()
-    db = parser.add_argument_group('Database')
-    db.add_argument('--db-host',
-                    dest='database_host',
-                    default=None,
-                    help='The machine hosting the database')
-    db.add_argument('--db-port',
-                    dest='database_port',
-                    default=None,
-                    help='The port the database is running behind')
-    db.add_argument('--db-type',
-                    dest='database_backend',
-                    choices=['elasticsearch'],
-                    default='elasticsearch',
-                    help='The type of database to use')
-    pulse = parser.add_argument_group('Pulse')
-    pulse.add_argument('--topic',
-                       dest='pulse_topic',
-                       default='unittest.#',
-                       help='The pulse topic to listen on')
-    pulse.add_argument('--durable',
-                       dest='pulse_durable',
-                       action='store_true',
-                       help='If specified, create a durable pulse queue')
-    pulse.add_argument('--user',
-                       dest='pulse_user',
-                       help='Pulse user to register the queue to')
-    pulse.add_argument('--password',
-                       dest='pulse_password',
-                       help='The pulse user\'s password')
+    parser.add_argument('--settings',
+        dest='settings',
+        required=True,
+        default="./config/dev-debug.json",
+        help='The config settings file'
+    )
 
     # setup logging args
     commandline.log_formatters = { k: v for k, v in commandline.log_formatters.iteritems() if k in ('raw', 'mach') }
@@ -49,13 +29,11 @@ def cli(args=sys.argv[1:]):
 
     global logger
     logger = commandline.setup_logging("catalog-listener", args)
+    use_mozlog()
+    config.read_runtime_config(args["settings"])
+    constants.set(config.settings.constants)
 
-    config.read_runtime_config("./resources/config/config.json")
-
-    pulse_args = config.settings.pulse
-    set_default({k[len('pulse_'):]: v for k, v in args.items() if k.startswith('pulse') if v is not None}, pulse_args)
-
-    listen(pulse_args)
+    listen(config.settings.pulse)
 
 
 if __name__ == '__main__':

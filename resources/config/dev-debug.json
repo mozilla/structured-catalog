@@ -12,9 +12,14 @@
 	},
 	"datastore":{
 		"type":"elasticsearch",
-		"host":"localhost",
+		"host":"http://localhost",
 		"port":"9200",
 		"index":"unittest"
 	},
-	"work_queues": ["rq", "mongo", "simple"]
+	"work_queues": ["rq", "mongo", "simple"],
+	"constants": {
+		"pyLibrary.env.http.default_headers": {
+			"From": "https://github.com/mozilla/structured-catalog"
+		}
+	}
 }

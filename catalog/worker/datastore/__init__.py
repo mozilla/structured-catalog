@@ -1,4 +1,5 @@
 from .elasticsearch import ElasticSearchStore
+from pyLibrary.debugs.logs import Log
 
 store_map = {
     'elasticsearch': ElasticSearchStore,
@@ -6,8 +7,8 @@ store_map = {
 
 def get_storage_backend(settings):
     try:
-        store_map[settings.type](settings)
+        return store_map[settings.type](settings)
     except Exception, e:
-        raise KeyError("Unrecognized store '{}'".format(settings.type))
+        Log.error("Unrecognized store '{{type}}'", {"type":settings.type}, e)
 
 

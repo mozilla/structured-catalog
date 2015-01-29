@@ -1,11 +1,12 @@
-from mozlog.structured import reader
 import mozfile
 import requests
 
 from .. import config
 from .. import utils
-from catalog.worker.unittest_logs_to_es import StoreResultsHandler
+from catalog.worker.unittest_logs_to_es import process_unittest
 from .datastore import get_storage_backend
+from pyLibrary.debugs.logs import Log
+
 
 settings = config.settings
 logger = None
@@ -22,14 +23,13 @@ def process_test_job(data):
     log_path = _download_log(log_url)
 
     try:
-        store = get_storage_backend(settings.datastore)
+        store = get_storage_backend(config.settings.datastore)
 
         # TODO commit metadata about the test run
-
-        handler = StoreResultsHandler(data, store)
         with open(log_path, 'r') as log:
-            iterator = reader.read(log)
-            reader.handle_log(iterator, handler)
+            process_unittest(log_url, data, log, store)
+    except Exception, e:
+        Log.error("Problem with hanlder", e)
     finally:
         mozfile.remove(log_path)
 

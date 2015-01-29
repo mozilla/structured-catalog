@@ -30,47 +30,18 @@ except Exception:
 
 DEBUG = True
 
-# FOR structured-catalog PROJECT
-class StoreResultsHandler(LogHandler):
-    def __init__(self, buildbot_json, datastore):
-        LogHandler.__init__(self)
-        # LOG PROCESSING REQUIRES CONTEXT, ETL PATH, AND THE BUILDBOT JSON IN
-        # FIRST TWO LINES
-        self.content = [
-            convert.value2json({"name": "dummy"}),
-            buildbot_json
-        ]
-        self.store = datastore
 
-    def __getattr__(self, key):
-        """
-        Remember everything
-        """
+def process_unittest(name, buildbot_header, source, destination):
+    etl_header = wrap({"name": "structured-catalog"})
+    data = transform_buildbot(buildbot_header)
 
-        def accumulate(msg):
-            self.content.append[msg]
-
-        return accumulate
-
-    def close(self):
-        """
-        Must be called to know when log processing is done
-        """
-        process_unittest("dummy value", self.content, self.store)
-
-
-def process_unittest(source_key, source, destination):
     lines = StringIO(source.read())
-
-    etl_header = convert.json2value(lines.next())
-    data = transform_buildbot(convert.json2value(lines.next()))
-
     timer = Timer("Process log {{file}}", {"file": etl_header.name})
     try:
         with timer:
             summary = process_unittest_log(etl_header.name, lines)
     except Exception, e:
-        Log.error("Problem processing {{key}}", {"key": source_key}, e)
+        Log.error("Problem processing {{key}}", {"key": name}, e)
         raise e
 
     data.etl = {
